@@ -319,6 +319,47 @@ Generate a single-file version if the user prefers simplicity, or the modular ve
 ### "My batch requests aren't helping"
 → Each sub-request in a batch counts as a separate API call. Batching reduces HTTP overhead but NOT your quota usage. Still useful for reducing latency.
 
+## Claude's Own API Call Behavior (MCP Tools)
+
+When Claude is making Meta API calls directly — via MCP tools like `mcp__meta-ads__get_campaigns`, `mcp__meta-ads__get_insights`, `mcp__meta-ads__get_ads`, etc. — these rules apply to Claude's own behavior:
+
+### Pacing
+
+- **Never fire more than 1 Meta MCP call per second.** If multiple calls are needed, space them out.
+- **Never make parallel Meta MCP calls.** Always sequential, one at a time.
+- **Batch related lookups.** If you need campaign data + ad set data + ad data, plan the minimum number of calls before starting. Don't fetch everything "just in case."
+
+### Call Minimization
+
+Before making any Meta MCP call, ask:
+1. **Do I already have this data?** Check earlier in the conversation — don't re-fetch what you already retrieved.
+2. **Can I get this in fewer calls?** Use field parameters to pull related data in a single call instead of making separate calls for each piece.
+3. **Do I need ALL of this?** If the user asks about one campaign, don't fetch all campaigns. Use filters and IDs to narrow the request.
+
+### Reorganization
+
+When a task requires multiple Meta API calls, reorganize them for efficiency:
+
+1. **Reads before writes** — gather all data first, then make changes
+2. **Parent before child** — fetch campaigns before ad sets before ads (you need parent IDs)
+3. **Consolidate insights** — one insights call with multiple metrics beats multiple calls with one metric each
+4. **Group by ad account** — if working across accounts, finish one account completely before moving to the next
+
+### Error Handling
+
+If a Meta MCP call returns a rate limit error:
+1. **Stop all Meta calls immediately** — don't try another call hoping it works
+2. **Tell the user** — "Hit a rate limit. Waiting [X] seconds before continuing."
+3. **Wait at least 60 seconds** before retrying (300 seconds if on Development tier)
+4. **Resume at half speed** — after a rate limit hit, double the delay between subsequent calls
+
+### Reporting
+
+After any session involving multiple Meta API calls, briefly report:
+- Total calls made
+- Any rate limit warnings encountered
+- Suggestions if the task could be done more efficiently next time
+
 ## Do NOT
 
 - Generate code that ignores rate limit headers

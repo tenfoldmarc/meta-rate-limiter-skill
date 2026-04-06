@@ -9,10 +9,11 @@ Stop getting throttled by Meta's API. This skill knows every rate limit, error c
 
 1. **Asks your setup** — access tier (Development or Standard), active ad count, preferred language
 2. **Calculates your exact quotas** — tells you precisely how many API calls per hour you can make
-3. **Generates rate-limited code** — production-ready JavaScript or Python with built-in header monitoring, exponential backoff, and budget change queuing
-4. **Diagnoses throttling errors** — paste any Meta error code and get the exact cause and fix
-5. **Optimizes existing code** — reviews your Meta API code against a checklist of common rate limit mistakes
-6. **Tracks all four Meta usage headers** — X-App-Usage, X-Business-Use-Case-Usage, X-Ad-Account-Usage, and X-FB-Ads-Insights-Throttle
+3. **Guards Claude's own API calls** — when Claude makes Meta API calls for you (via MCP tools), it automatically paces, batches, and minimizes calls to stay under limits
+4. **Generates rate-limited code** — production-ready JavaScript or Python with built-in header monitoring, exponential backoff, and budget change queuing
+5. **Diagnoses throttling errors** — paste any Meta error code and get the exact cause and fix
+6. **Optimizes existing code** — reviews your Meta API code against a checklist of common rate limit mistakes
+7. **Tracks all four Meta usage headers** — X-App-Usage, X-Business-Use-Case-Usage, X-Ad-Account-Usage, and X-FB-Ads-Insights-Throttle
 
 ---
 
